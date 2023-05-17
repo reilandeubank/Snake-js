@@ -1,21 +1,26 @@
 var canvas = document.getElementById("myCanvas");
 var ctx = canvas.getContext("2d");
 var changeDirFrame = [0, 0, 0, 1];
-var frameCount = 0;
+var snakeSquares = [[0, 0], [0, 1]];
 
 var squareSize = 20;
-var snakeX = 0;
-var snakeY = 0;
+var headX = 0;
+var headY = 0;
 var changeDir = false;
 
 var directions = ["right", "left", "up", "down"];
 var direction = [0, 0, 0, 0]
 var keyPressed = "none";
 
+appleX = Math.floor(Math.random() * (canvas.width / squareSize)) * squareSize;
+appleY = Math.floor(Math.random() * (canvas.height / squareSize)) * squareSize;
+console.log("apple at: " + appleX + ", " + appleY);
+
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
 
 function keyDownHandler(e) {
+  console.log(e.code);
   if(e.key == "Right" || e.key == "ArrowRight") {
     keyPressed = directions[0];
     if (!direction[1]) {
@@ -59,36 +64,57 @@ function keyUpHandler(e) {
 }
 
 
-
-function drawSnake() {
+function appleHandler() {
+  if (headX == appleX && headY == appleY) {
+    appleX = Math.floor(Math.random() * (canvas.width / squareSize)) * squareSize;
+    appleY = Math.floor(Math.random() * (canvas.height / squareSize)) * squareSize;
+    headX = headX + direction[0] * squareSize - direction[1] * squareSize;
+    headY = headY + direction[3] * squareSize - direction[2] * squareSize;
+    snakeSquares.push([headX, headY]);
+  }
   ctx.beginPath();
-  ctx.rect(snakeX, snakeY, squareSize-2, squareSize-2);
-  ctx.fillStyle = "#02FF02";
+  ctx.rect(appleX, appleY, squareSize-2, squareSize-2);
+  ctx.fillStyle = "red";
   ctx.fill();
   ctx.closePath();
 }
 
 
-function draw() {
-  //ctx.clearRect(0, 0, canvas.width, canvas.height);
-  drawSnake();
-  
 
-  if (direction[0]) {
-    snakeX += squareSize;
+function drawSnake() {
+  for (var i = 0; i < snakeSquares.length; i++) {
+    ctx.beginPath();
+    ctx.rect(snakeSquares[i][0], snakeSquares[i][1], squareSize-2, squareSize-2);
+    ctx.fillStyle = "#02FF02";
+    ctx.fill();
+    ctx.closePath();
   }
-  else if (direction[1]) {
-    snakeX -= squareSize;
-  }
-  else if (direction[2]) {
-    snakeY -= squareSize;
-  }
-  else if (direction[3]) {
-    snakeY += squareSize;
-  }
-  frameCount++;
+}
+
+
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  headX = headX + direction[0] * squareSize - direction[1] * squareSize;
+  headY = headY + direction[3] * squareSize - direction[2] * squareSize;
+  snakeSquares.shift();
+  snakeSquares.push([headX, headY]);
+  drawSnake();
+  appleHandler();
+
+  //if (direction[0]) {
+    //snakeX += squareSize;
+  //}
+  //else if (direction[1]) {
+    //snakeX -= squareSize;
+  //}
+  //else if (direction[2]) {
+    //snakeY -= squareSize;
+  //}
+  //else if (direction[3]) {
+    //snakeY += squareSize;
+  //}
   //requestAnimationFrame(draw);
 }
 
 //draw();
-var interval = setInterval(draw, 60);
+var interval = setInterval(draw, 80);
