@@ -1,12 +1,11 @@
 var canvas = document.getElementById("myCanvas");
 var ctx = canvas.getContext("2d");
-var changeDirFrame = [0, 0, 0, 1];
+
 var snakeSquares = [[0, 0], [0, 1]];
 
-var squareSize = 20;
+var squareSize = 32;
 var headX = 0;
 var headY = 0;
-var changeDir = false;
 
 var directions = ["right", "left", "up", "down"];
 var direction = [0, 0, 0, 0]
@@ -14,13 +13,18 @@ var keyPressed = "none";
 
 appleX = Math.floor(Math.random() * (canvas.width / squareSize)) * squareSize;
 appleY = Math.floor(Math.random() * (canvas.height / squareSize)) * squareSize;
-console.log("apple at: " + appleX + ", " + appleY);
+if (appleX == 0 && appleY == 0) {
+  appleX = Math.floor(Math.random() * (canvas.width / squareSize)) * squareSize;
+  appleY = Math.floor(Math.random() * (canvas.height / squareSize)) * squareSize;
+}
+
+
+function again()
 
 document.addEventListener("keydown", keyDownHandler, false);
-document.addEventListener("keyup", keyUpHandler, false);
+//document.addEventListener("keyup", keyUpHandler, false);
 
 function keyDownHandler(e) {
-  console.log(e.code);
   if(e.key == "Right" || e.key == "ArrowRight") {
     keyPressed = directions[0];
     if (!direction[1]) {
@@ -45,23 +49,22 @@ function keyDownHandler(e) {
       direction = [0, 0, 0, 1];
     }
   }
-  changeDir = true;
 }
 
-function keyUpHandler(e) {
-  if(e.key == "Right" || e.key == "ArrowRight") {
-    //keyPressed = "none";
-  }
-  else if(e.key == "Left" || e.key == "ArrowLeft") {
-    //keyPressed = "none";    
-  }
-  else if(e.key == "Up" || e.key == "ArrowUp") {
-    //keyPressed = "none";
-  }
-  else if(e.key == "Down" || e.key == "ArrowDown") {
-    //keyPressed = "none";
-  }
-}
+//function keyUpHandler(e) {
+//  if(e.key == "Right" || e.key == "ArrowRight") {
+//    //keyPressed = "none";
+//  }
+//  else if(e.key == "Left" || e.key == "ArrowLeft") {
+//    //keyPressed = "none";    
+//  }
+//  else if(e.key == "Up" || e.key == "ArrowUp") {
+//    //keyPressed = "none";
+//  }
+//  else if(e.key == "Down" || e.key == "ArrowDown") {
+//    //keyPressed = "none";
+//  }
+//}
 
 
 function appleHandler() {
@@ -74,7 +77,7 @@ function appleHandler() {
   }
   ctx.beginPath();
   ctx.rect(appleX, appleY, squareSize-2, squareSize-2);
-  ctx.fillStyle = "red";
+  ctx.fillStyle = "#b80000";
   ctx.fill();
   ctx.closePath();
 }
@@ -85,7 +88,7 @@ function drawSnake() {
   for (var i = 0; i < snakeSquares.length; i++) {
     ctx.beginPath();
     ctx.rect(snakeSquares[i][0], snakeSquares[i][1], squareSize-2, squareSize-2);
-    ctx.fillStyle = "#02FF02";
+    ctx.fillStyle = "#00bF00";
     ctx.fill();
     ctx.closePath();
   }
@@ -117,4 +120,4 @@ function draw() {
 }
 
 //draw();
-var interval = setInterval(draw, 80);
+var interval = setInterval(draw, 100);
