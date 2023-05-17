@@ -19,10 +19,7 @@ if (appleX == 0 && appleY == 0) {
 }
 
 
-function again()
-
 document.addEventListener("keydown", keyDownHandler, false);
-//document.addEventListener("keyup", keyUpHandler, false);
 
 function keyDownHandler(e) {
   if(e.key == "Right" || e.key == "ArrowRight") {
@@ -50,21 +47,6 @@ function keyDownHandler(e) {
     }
   }
 }
-
-//function keyUpHandler(e) {
-//  if(e.key == "Right" || e.key == "ArrowRight") {
-//    //keyPressed = "none";
-//  }
-//  else if(e.key == "Left" || e.key == "ArrowLeft") {
-//    //keyPressed = "none";    
-//  }
-//  else if(e.key == "Up" || e.key == "ArrowUp") {
-//    //keyPressed = "none";
-//  }
-//  else if(e.key == "Down" || e.key == "ArrowDown") {
-//    //keyPressed = "none";
-//  }
-//}
 
 
 function appleHandler() {
@@ -104,18 +86,7 @@ function draw() {
   drawSnake();
   appleHandler();
 
-  //if (direction[0]) {
-    //snakeX += squareSize;
-  //}
-  //else if (direction[1]) {
-    //snakeX -= squareSize;
-  //}
-  //else if (direction[2]) {
-    //snakeY -= squareSize;
-  //}
-  //else if (direction[3]) {
-    //snakeY += squareSize;
-  //}
+
   //requestAnimationFrame(draw);
 }
 
