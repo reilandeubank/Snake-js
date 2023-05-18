@@ -145,9 +145,7 @@ function draw() {
     if (snakeSquares.length > snakeLen) {
       snakeSquares.shift();
     }
-    drawSnake();
-    appleHandler();
-    snakeController();
+    //snakeController();
   }
   else {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -156,10 +154,9 @@ function draw() {
     ctx.textAlign = "center";
     ctx.fillText("Welcome to Snake", canvas.width/2, canvas.height/2 - 100);
     ctx.fillText("Use the arrow keys to start", canvas.width/2, canvas.height/2 - 50);
-
-    drawSnake();
-    appleHandler();
   }
+  drawSnake();
+  appleHandler();
   animationFrameId = requestAnimationFrame(draw); // Store the new animation frame ID
 }
 
