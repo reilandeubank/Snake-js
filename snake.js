@@ -11,6 +11,7 @@ var snakeSquares = [
   [startPos, startPos + squareSize],
   [startPos, startPos],
 ];
+snakeLen = 2;
 var started = false;
 
 var count = 0;
@@ -23,12 +24,10 @@ var animationFrameId = null; // Store the animation frame ID
 
 appleX = Math.floor(Math.random() * (canvas.width / squareSize)) * squareSize;
 appleY = Math.floor(Math.random() * (canvas.height / squareSize)) * squareSize;
-if (appleX == 0 && appleY == 0) {
-  appleX = Math.floor(Math.random() * (canvas.width / squareSize)) * squareSize;
-  appleY = Math.floor(Math.random() * (canvas.height / squareSize)) * squareSize;
-}
 
 function restart() {
+  console.log("restarting");
+  started = false;
   cancelAnimationFrame(animationFrameId); // Stop the previous animation frame
   count = 0;
   headX = startPos;
@@ -37,15 +36,11 @@ function restart() {
     [startPos, startPos + squareSize],
     [startPos, startPos],
   ];
+  snakeLen = 2;
   direction = [0, 0, 0, 0];
   keyPressed = "none";
-  started = false;
   appleX = Math.floor(Math.random() * (canvas.width / squareSize)) * squareSize;
   appleY = Math.floor(Math.random() * (canvas.height / squareSize)) * squareSize;
-  if (appleX == 0 && appleY == 0) {
-    appleX = Math.floor(Math.random() * (canvas.width / squareSize)) * squareSize;
-    appleY = Math.floor(Math.random() * (canvas.height / squareSize)) * squareSize;
-  }
   draw(); // Start a new animation frame
 }
 
@@ -73,22 +68,53 @@ function keyDownHandler(e) {
       direction = [0, 0, 0, 1];
     }
   }
+  if (e.code == "KeyR") {
+    restart();
+    // snakeLen++;
+  }
+  else {
   started = true;
+  }
+}
+
+function gameOver() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawSnake();
+  ctx.fillStyle = "#b80000";
+  ctx.fillText("GAME OVER", canvas.width/2, canvas.height/2);
+  ctx.fillText("Press 'restart' or 'R' to try again", canvas.width/2, canvas.height/2 + 50);
 }
 
 function appleHandler() {
   if (headX == appleX && headY == appleY) {
     appleX = Math.floor(Math.random() * (canvas.width / squareSize)) * squareSize;
     appleY = Math.floor(Math.random() * (canvas.height / squareSize)) * squareSize;
-    headX = headX + direction[0] * squareSize - direction[1] * squareSize;
-    headY = headY + direction[3] * squareSize - direction[2] * squareSize;
-    snakeSquares.push([headX, headY]);
+    snakeLen++
   }
   ctx.beginPath();
   ctx.rect(appleX, appleY, squareSize - 1, squareSize - 1); 
   ctx.fillStyle = "#b80000";
   ctx.fill();
   ctx.closePath();
+}
+
+function collisionDetection() {
+  // console.log("checking collision");
+  if (headX < 0 || headX >= canvas.width || headY < 0 || headY >= canvas.height) {
+    // console.log("out of bounds");
+    gameOver();
+    return true;
+  }
+
+  for (var i = 0; i < snakeSquares.length - 1; i++) {
+    // console.log("checking snake square", i)
+    if (snakeSquares[i][0] === headX && snakeSquares[i][1] === headY) {
+      // console.log("collision");
+      gameOver();
+      return true;
+    }
+  }
+  return false;
 }
 
 function drawSnake() {
@@ -104,18 +130,33 @@ function drawSnake() {
 function draw() {
   if (++count < 4) {
     //count++;
-  } else if (started) {
+  }
+  else if (started) {
     count = 0;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
     headX = headX + direction[0] * squareSize - direction[1] * squareSize;
     headY = headY + direction[3] * squareSize - direction[2] * squareSize;
 
-    snakeSquares.shift();
+    if (collisionDetection()) {
+      return;
+    }
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     snakeSquares.push([headX, headY]);
+    if (snakeSquares.length > snakeLen) {
+      snakeSquares.shift();
+    }
     drawSnake();
     appleHandler();
-  } else {
+    snakeController();
+  }
+  else {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.font = "35px Courier New";
+    ctx.fillStyle = "#b80000";
+    ctx.textAlign = "center";
+    ctx.fillText("Welcome to Snake", canvas.width/2, canvas.height/2 - 100);
+    ctx.fillText("Use the arrow keys to start", canvas.width/2, canvas.height/2 - 50);
+
     drawSnake();
     appleHandler();
   }
