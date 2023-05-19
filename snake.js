@@ -70,7 +70,6 @@ function keyDownHandler(e) {
   }
   if (e.code == "KeyR") {
     restart();
-    // snakeLen++;
   }
   else {
   started = true;
@@ -81,6 +80,7 @@ function gameOver() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawSnake();
   ctx.fillStyle = "#b80000";
+  ctx.textAlign = 'center';
   ctx.fillText("GAME OVER", canvas.width/2, canvas.height/2);
   ctx.fillText("Press 'restart' or 'R' to try again", canvas.width/2, canvas.height/2 + 50);
 }
@@ -99,17 +99,13 @@ function appleHandler() {
 }
 
 function collisionDetection() {
-  // console.log("checking collision");
   if (headX < 0 || headX >= canvas.width || headY < 0 || headY >= canvas.height) {
-    // console.log("out of bounds");
     gameOver();
     return true;
   }
 
   for (var i = 0; i < snakeSquares.length - 1; i++) {
-    // console.log("checking snake square", i)
     if (snakeSquares[i][0] === headX && snakeSquares[i][1] === headY) {
-      // console.log("collision");
       gameOver();
       return true;
     }
@@ -124,12 +120,15 @@ function drawSnake() {
     ctx.rect(snakeSquares[i][0], snakeSquares[i][1], squareSize - 1, squareSize - 1);
     ctx.fill();
   }
+  ctx.font = "35px Courier New";
+  ctx.textAlign = 'right';
+  ctx.fillStyle = "black";
+  ctx.fillText("Score: " + (snakeLen - 2), canvas.width - 10, 35);
   ctx.closePath();
 }
 
 function draw() {
-  if (++count < 4) {
-    //count++;
+  if (++count < 5) {
   }
   else if (started) {
     count = 0;
